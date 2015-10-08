@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionsTests_DateTime.cs" />
     <Compile Include="ExtensionsTests_IList.cs" />
     <Compile Include="ExtensionsTest_Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
