@@ -230,3 +230,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+.vs/CodeArtEng.Extensions/v16/Server/sqlite3/db.lock
+.vs/CodeArtEng.Extensions/v16/Server/sqlite3/storage.ide

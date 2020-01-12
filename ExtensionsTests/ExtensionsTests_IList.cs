@@ -34,11 +34,11 @@ namespace ExtensionsTests
             Assert.AreEqual(new int[] { 0, 1, 3, 2 }, TestItems.ToArray());
         }
 
-        [Test][ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test]
         public void IList_MoveUp_IndexOutOfRange()
         {
             List<int> TestItems = new List<int>() { 0, 1, 2, 3 };
-            TestItems.MoveUp(5);
+            Assert.Throws<IndexOutOfRangeException>(()=> { TestItems.MoveUp(5); });
         }
 
         [Test]
@@ -66,11 +66,10 @@ namespace ExtensionsTests
         }
 
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
         public void IList_MoveDown_IndexOutOfRange()
         {
             List<int> TestItems = new List<int>() { 0, 1, 2, 3 };
-            TestItems.MoveDown(5);
+            Assert.Throws<IndexOutOfRangeException>(() => { TestItems.MoveDown(5); });
         }
     }
 }
