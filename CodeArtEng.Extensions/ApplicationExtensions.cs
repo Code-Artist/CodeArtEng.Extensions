@@ -67,9 +67,29 @@ namespace System.Windows.Forms
         /// </summary>
         public static void CheckAndUpdateApplicationStartupPath()
         {
-            if(StartApplicationOnStartupEnabled())
+            if (StartApplicationOnStartupEnabled())
             {
-                AddApplicationToStartup();
+                string oldValue;
+                string arg = string.Empty;
+
+                //Read Argument From Registry Key Value
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+                {
+                    oldValue = key.GetValue(Application.ProductName).ToString();
+                    if (oldValue.StartsWith("\""))
+                    {
+                        arg = string.Join("\"", oldValue.Split('\"').Skip(2)).Trim();
+                    }
+                    else if (oldValue.Contains(" "))
+                    {
+                        arg = string.Join(" ", oldValue.Split(' ').Skip(1));
+                    }
+                }
+
+                if (string.IsNullOrEmpty(arg))
+                    AddApplicationToStartup();
+                else
+                    AddApplicationToStartup(arg);
             }
         }
 

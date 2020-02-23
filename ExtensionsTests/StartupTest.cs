@@ -40,6 +40,23 @@ namespace System.Windows.Forms
             Assert.IsFalse(GetStartupKeyValue().Contains("DummyPath"));
         }
 
+
+        [Test]
+        public void UpdatePathWithArg()
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                key.SetValue(Application.ProductName, "\"" + "DummyPath" + "\" -a -d Data=\"Test Data\"");
+            }
+            Assert.IsTrue(GetStartupKeyValue().Contains("DummyPath"));
+
+            ApplicationExtensions.CheckAndUpdateApplicationStartupPath();
+
+            Assert.IsTrue(GetStartupKeyValue().Contains(" -a -d Data=\"Test Data\""));
+        }
+
+
+
         private string GetStartupKeyValue()
         {
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", false))
