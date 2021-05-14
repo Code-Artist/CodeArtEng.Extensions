@@ -52,6 +52,7 @@
     <Compile Include="ExtensionsTests_IList.cs" />
     <Compile Include="ExtensionsTest_Form.cs" />
     <Compile Include="ExtensionsTest_Path.cs" />
+    <Compile Include="ObjectExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartupTest.cs" />
   </ItemGroup>

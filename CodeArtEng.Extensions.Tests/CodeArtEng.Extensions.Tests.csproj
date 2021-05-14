@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net452;net5.0-windows;net6.0-windows</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>;NU1605</WarningsAsErrors>
+    <NoWarn>1701;1702;NU1603</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ExtensionsTests\ExtensionsTests_DateTime.cs" Link="ExtensionsTests_DateTime.cs" />
+    <Compile Include="..\ExtensionsTests\ExtensionsTests_IList.cs" Link="ExtensionsTests_IList.cs" />
+    <Compile Include="..\ExtensionsTests\ExtensionsTest_Form.cs" Link="ExtensionsTest_Form.cs" />
+    <Compile Include="..\ExtensionsTests\ExtensionsTest_Path.cs" Link="ExtensionsTest_Path.cs" />
+    <Compile Include="..\ExtensionsTests\ObjectExtensionsTests.cs" Link="ObjectExtensionsTests.cs" />
+    <Compile Include="..\ExtensionsTests\StartupTest.cs" Link="StartupTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CodeArtEng.Extensions\CodeArtEng.Extensions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' == 'net452'" />
+  </ItemGroup>
+
+</Project>
