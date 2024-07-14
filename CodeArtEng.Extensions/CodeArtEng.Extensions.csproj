@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;net6.0-windows;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48;net452;net6.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>2.0.1</Version>
+    <Version>2.2.1</Version>
     <Description>Windows Forms Extension</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Code-Artist/CodeArtEng.Extensions</PackageProjectUrl>
     <PackageIcon>CAELogoSmall.png</PackageIcon>
     <RepositoryUrl>https://github.com/Code-Artist/CodeArtEng.Extensions</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <PackageReleaseNotes>Added .NET 5.0 and 6.0 Support.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added TimeBlock class.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Code Artist</Authors>
     <Company>Code Art Engineering</Company>

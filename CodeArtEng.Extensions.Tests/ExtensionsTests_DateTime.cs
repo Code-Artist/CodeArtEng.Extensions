@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ExtensionsTests
@@ -56,6 +52,20 @@ namespace ExtensionsTests
             DateTime val = new DateTime(2015, 1, 1, 12, 38, 25);
             val = val.RoundDown(TimeSpan.FromHours(1));
             Assert.AreEqual(new DateTime(2015, 1, 1, 12, 00, 00), val);
+        }
+
+        [Test]
+        public void DateTime_CalendarWeekISO8601()
+        {
+            DateTime val = new DateTime(2024, 1, 1);
+            Assert.AreEqual(1, val.CalendarWeekISO8601());
+        }
+
+        [Test]
+        public void DateTime_CalendarWeekNA()
+        {
+            DateTime val = new DateTime(2024, 1, 1);
+            Assert.AreEqual(53, val.CalendarWeekNA());
         }
     }
 }

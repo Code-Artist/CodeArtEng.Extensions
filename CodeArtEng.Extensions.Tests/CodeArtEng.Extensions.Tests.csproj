@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;net5.0-windows;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48;net452;net6.0-windows</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -13,16 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\ExtensionsTests\ExtensionsTests_DateTime.cs" Link="ExtensionsTests_DateTime.cs" />
-    <Compile Include="..\ExtensionsTests\ExtensionsTests_IList.cs" Link="ExtensionsTests_IList.cs" />
-    <Compile Include="..\ExtensionsTests\ExtensionsTest_Form.cs" Link="ExtensionsTest_Form.cs" />
-    <Compile Include="..\ExtensionsTests\ExtensionsTest_Path.cs" Link="ExtensionsTest_Path.cs" />
-    <Compile Include="..\ExtensionsTests\ObjectExtensionsTests.cs" Link="ObjectExtensionsTests.cs" />
-    <Compile Include="..\ExtensionsTests\StartupTest.cs" Link="StartupTest.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
   </ItemGroup>
@@ -32,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' == 'net48'" />
     <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' == 'net452'" />
   </ItemGroup>
 

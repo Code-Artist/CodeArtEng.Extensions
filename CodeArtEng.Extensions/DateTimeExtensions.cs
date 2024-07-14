@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace System
 {
@@ -30,5 +26,30 @@ namespace System
             return new DateTime((dt.Ticks / d.Ticks) * d.Ticks);
         }
 
+
+        /// <summary>
+        /// Return week number based on ISO8601 format.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static int CalendarWeekISO8601(this DateTime date)
+        {
+            return date.GetCalendarWeek(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        }
+
+        /// <summary>
+        /// Return week number based on North America date system
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static int CalendarWeekNA(this DateTime date)
+        {
+            return date.GetCalendarWeek(CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday);
+        }
+
+        private static int GetCalendarWeek(this DateTime date, CalendarWeekRule weekRule, DayOfWeek firstDayofWeek)
+        {
+            return CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(date, weekRule, firstDayofWeek);
+        }
     }
 }
