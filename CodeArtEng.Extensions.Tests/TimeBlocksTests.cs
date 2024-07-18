@@ -185,6 +185,111 @@ namespace ExtensionsTests
 
             Assert.IsTrue(timeBlock.Duration < TimeSpan.Zero); // Duration should be negative
         }
+
+        [Test]
+        public void Offset_PositiveSeconds_ShouldShiftBothStartAndEndTime()
+        {
+            var timeBlock = new TimeBlock
+            {
+                StartTime = new DateTime(2024, 1, 1, 12, 0, 0),
+                EndTime = new DateTime(2024, 1, 1, 13, 0, 0)
+            };
+
+            timeBlock.Offset(3600); // Offset by 1 hour
+
+            Assert.AreEqual(new DateTime(2024, 1, 1, 13, 0, 0), timeBlock.StartTime);
+            Assert.AreEqual(new DateTime(2024, 1, 1, 14, 0, 0), timeBlock.EndTime);
+        }
+
+        [Test]
+        public void Offset_NegativeSeconds_ShouldShiftBothStartAndEndTimeBackwards()
+        {
+            var timeBlock = new TimeBlock
+            {
+                StartTime = new DateTime(2024, 1, 1, 12, 0, 0),
+                EndTime = new DateTime(2024, 1, 1, 13, 0, 0)
+            };
+
+            timeBlock.Offset(-1800); // Offset by -30 minutes
+
+            Assert.AreEqual(new DateTime(2024, 1, 1, 11, 30, 0), timeBlock.StartTime);
+            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 30, 0), timeBlock.EndTime);
+        }
+
+        [Test]
+        public void Offset_WithTimeSpan_ShouldShiftBothStartAndEndTime()
+        {
+            var timeBlock = new TimeBlock
+            {
+                StartTime = new DateTime(2024, 1, 1, 12, 0, 0),
+                EndTime = new DateTime(2024, 1, 1, 13, 0, 0)
+            };
+
+            timeBlock.Offset(TimeSpan.FromMinutes(45));
+
+            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 45, 0), timeBlock.StartTime);
+            Assert.AreEqual(new DateTime(2024, 1, 1, 13, 45, 0), timeBlock.EndTime);
+        }
+
+        [Test]
+        public void Extend_PositiveSeconds_ShouldExtendEndTime()
+        {
+            var timeBlock = new TimeBlock
+            {
+                StartTime = new DateTime(2024, 1, 1, 12, 0, 0),
+                EndTime = new DateTime(2024, 1, 1, 13, 0, 0)
+            };
+
+            timeBlock.Extend(1800); // Extend by 30 minutes
+
+            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 0, 0), timeBlock.StartTime);
+            Assert.AreEqual(new DateTime(2024, 1, 1, 13, 30, 0), timeBlock.EndTime);
+        }
+
+        [Test]
+        public void Extend_NegativeSeconds_ShouldShortenEndTime()
+        {
+            var timeBlock = new TimeBlock
+            {
+                StartTime = new DateTime(2024, 1, 1, 12, 0, 0),
+                EndTime = new DateTime(2024, 1, 1, 13, 0, 0)
+            };
+
+            timeBlock.Extend(-900); // Extend by -15 minutes
+
+            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 0, 0), timeBlock.StartTime);
+            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 45, 0), timeBlock.EndTime);
+        }
+
+        [Test]
+        public void Extend_WithTimeSpan_ShouldExtendEndTime()
+        {
+            var timeBlock = new TimeBlock
+            {
+                StartTime = new DateTime(2024, 1, 1, 12, 0, 0),
+                EndTime = new DateTime(2024, 1, 1, 13, 0, 0)
+            };
+
+            timeBlock.Extend(TimeSpan.FromMinutes(15));
+
+            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 0, 0), timeBlock.StartTime);
+            Assert.AreEqual(new DateTime(2024, 1, 1, 13, 15, 0), timeBlock.EndTime);
+        }
+
+        [Test]
+        public void Extend_NegativeTimeSpan_ShouldShortenEndTime()
+        {
+            var timeBlock = new TimeBlock
+            {
+                StartTime = new DateTime(2024, 1, 1, 12, 0, 0),
+                EndTime = new DateTime(2024, 1, 1, 13, 0, 0)
+            };
+
+            timeBlock.Extend(TimeSpan.FromMinutes(-20));
+
+            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 0, 0), timeBlock.StartTime);
+            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 40, 0), timeBlock.EndTime);
+        }
     }
 
 }

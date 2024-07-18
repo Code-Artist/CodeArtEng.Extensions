@@ -3,8 +3,9 @@
   <PropertyGroup>
     <TargetFrameworks>net48;net452;net6.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>2.2.1</Version>
-    <Description>Windows Forms Extension</Description>
+    <Version>2.3.0</Version>
+    <Description>New Methods: Offset, Extends. 
+Added properties: Tag</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Code-Artist/CodeArtEng.Extensions</PackageProjectUrl>
     <PackageIcon>CAELogoSmall.png</PackageIcon>

@@ -91,5 +91,70 @@ namespace CodeArtEng.Extensions
         {
             return StartTime < other.EndTime && other.StartTime < EndTime;
         }
+
+        /// <summary>
+        /// Gets or sets a user-defined object that provides additional information about this TimeBlock.
+        /// </summary>
+        /// <remarks>
+        /// This property can be used to associate custom data with the TimeBlock instance.
+        /// It is particularly useful for scenarios where you need to attach metadata or 
+        /// related objects to the TimeBlock without extending the class.
+        /// </remarks>
+        /// <example>
+        /// timeBlock.Tag = new { Category = "Meeting", Priority = 1 };
+        /// </example>
+        public object Tag { get; set; }
+
+
+        /// <summary>
+        /// Shifts both the StartTime and EndTime of the TimeBlock by the specified number of seconds.
+        /// </summary>
+        /// <param name="totalSeconds">The number of seconds to shift the TimeBlock. Can be positive or negative.</param>
+        /// <returns>The current TimeBlock instance with updated StartTime and EndTime.</returns>
+        /// <remarks>
+        /// Positive values shift the TimeBlock forward in time, while negative values shift it backward.
+        /// </remarks>
+        public TimeBlock Offset(double totalSeconds)
+        {
+            StartTime = StartTime.AddSeconds(totalSeconds);
+            EndTime = EndTime.AddSeconds(totalSeconds);
+            return this;
+        }
+
+        /// <summary>
+        /// Shifts both the StartTime and EndTime of the TimeBlock by the specified TimeSpan.
+        /// </summary>
+        /// <param name="duration">The TimeSpan to shift the TimeBlock. Can be positive or negative.</param>
+        /// <returns>The current TimeBlock instance with updated StartTime and EndTime.</returns>
+        /// <remarks>
+        /// Positive durations shift the TimeBlock forward in time, while negative durations shift it backward.
+        /// </remarks>
+        public TimeBlock Offset(TimeSpan duration) { return Offset(duration.TotalSeconds); }
+
+        /// <summary>
+        /// Extends the EndTime of the TimeBlock by the specified number of seconds.
+        /// </summary>
+        /// <param name="totalSeconds">The number of seconds to extend the TimeBlock. Can be positive or negative.</param>
+        /// <returns>The current TimeBlock instance with an updated EndTime.</returns>
+        /// <remarks>
+        /// Positive values increase the duration of the TimeBlock, while negative values decrease it.
+        /// The StartTime remains unchanged.
+        /// </remarks>
+        public TimeBlock Extend(double totalSeconds)
+        {
+            EndTime = EndTime.AddSeconds(totalSeconds);
+            return this;
+        }
+
+        /// <summary>
+        /// Extends the EndTime of the TimeBlock by the specified TimeSpan.
+        /// </summary>
+        /// <param name="duration">The TimeSpan to extend the TimeBlock. Can be positive or negative.</param>
+        /// <returns>The current TimeBlock instance with an updated EndTime.</returns>
+        /// <remarks>
+        /// Positive durations increase the duration of the TimeBlock, while negative durations decrease it.
+        /// The StartTime remains unchanged.
+        /// </remarks>
+        public TimeBlock Extend(TimeSpan duration) { return Extend(duration.TotalSeconds); }
     }
 }
