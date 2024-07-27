@@ -4,6 +4,8 @@
 
 The `DataGridViewEx` class is an extension class for the Windows Forms `DataGridView` control. It adds several useful features that make data editing more efficient and user-friendly. This article explains the main features of `DataGridViewEx` and provides usage examples.
 
+Why extension class? Implementation with extensions methods required minimum changes to project to enable / disable the advance features during development. Besides, this give developers more rooms to use `DataGridViewEx` on 3rd party enhanced grid object derrived from `DataGridView`.
+
 To activate extended features for a `DataGridView` object, call the `EnableAdvanceControl` method or any other public method in the `DataGridViewEx` class.
 
 ```csharp
