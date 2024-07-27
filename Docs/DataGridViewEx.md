@@ -11,7 +11,7 @@ DataGridView myDataGridView = new DataGridView();
 myDataGridView.EnableAdvanceControl();
 ```
 
-Alternatively, create `DataGridVewExtended` object directly from Visual Studio Toolbox.
+Alternatively, create `DataGridVewExtended` object directly from Visual Studio Toolbox.<br>
 ![DataGridViewExtended Toolbox](DataGridViewExtended.png)
 
 ## Key Features
