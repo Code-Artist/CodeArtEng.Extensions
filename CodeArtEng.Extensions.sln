@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeArtEng.Extensions", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeArtEng.Extensions.Tests", "CodeArtEng.Extensions.Tests\CodeArtEng.Extensions.Tests.csproj", "{7A288C52-4495-4EF7-BB03-3770B3F5F240}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeArtEngExtensionsDemo", "CodeArtEngExtensionsDemo\CodeArtEngExtensionsDemo.csproj", "{43F48CC1-9360-4EF5-BCCB-477E7C1C8C73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7A288C52-4495-4EF7-BB03-3770B3F5F240}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A288C52-4495-4EF7-BB03-3770B3F5F240}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A288C52-4495-4EF7-BB03-3770B3F5F240}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43F48CC1-9360-4EF5-BCCB-477E7C1C8C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43F48CC1-9360-4EF5-BCCB-477E7C1C8C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43F48CC1-9360-4EF5-BCCB-477E7C1C8C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43F48CC1-9360-4EF5-BCCB-477E7C1C8C73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

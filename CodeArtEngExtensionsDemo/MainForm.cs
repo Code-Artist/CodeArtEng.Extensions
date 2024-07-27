@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace CodeArtEngExtensionsDemo
+{
+    public partial class MainForm : Form
+    {
+        public MainForm()
+        {
+            InitializeComponent();
+            InitDgv();
+
+        }
+
+        private void InitDgv()
+        {
+            Random rand = new Random();
+            for (int x = 0; x < 20; x++)
+            {
+                DataGridViewRow ptrRow = Dgv.Rows[Dgv.Rows.Add()];
+                foreach (DataGridViewCell cell in ptrRow.Cells)
+                {
+                    if (cell is DataGridViewCheckBoxCell)
+                    {
+                        cell.Value = rand.NextDouble() > 0.5;
+                    }
+                    else cell.Value = rand.Next(100);
+                }
+            }
+        }
+
+        private void DgvEnable_Click(object sender, EventArgs e)
+        {
+            Dgv.EnableAdvanceControl();
+        }
+
+        private void DgvCommit_Click(object sender, EventArgs e)
+        {
+            Dgv.CommitChanges();
+        }
+
+        private void DgvRevert_Click(object sender, EventArgs e)
+        {
+            Dgv.RevertChanges();
+        }
+    }
+}

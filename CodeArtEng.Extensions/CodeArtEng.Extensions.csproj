@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net48;net452;net6.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>2.3.0</Version>
+    <Version>2.5.0</Version>
     <Description>New Methods: Offset, Extends. 
 Added properties: Tag</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
