@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Drawing;
 using NUnit.Framework;
 
@@ -14,7 +14,7 @@ namespace ExtensionsTests
             {
                 tForm.Show();
                 tForm.Location = new Point(10, 10);
-                Assert.IsFalse(tForm.IsOutsideViewRegion());
+                Assert.That(tForm.IsOutsideViewRegion(),Is.False);
             }
         }
 
@@ -25,7 +25,7 @@ namespace ExtensionsTests
             {
                 tForm.Show();
                 tForm.Location = new Point(9000, 9000);
-                Assert.IsTrue(tForm.IsOutsideViewRegion());
+                Assert.That(tForm.IsOutsideViewRegion(),Is.True);
             }
         }
     }

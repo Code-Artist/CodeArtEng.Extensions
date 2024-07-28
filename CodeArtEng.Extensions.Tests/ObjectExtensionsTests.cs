@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Windows.Forms;
 
@@ -15,8 +15,8 @@ namespace ExtensionsTests
 
             b1.Padding = new Padding(0);
             b1.Width = 10;
-            Assert.AreEqual(5, b2.Padding.All);
-            Assert.AreEqual(123, b2.Width);
+            Assert.That(b2.Padding.All,Is.EqualTo(5));
+            Assert.That(b2.Width,Is.EqualTo(123));
         }
     }
 }

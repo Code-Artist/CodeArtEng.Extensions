@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using Microsoft.Win32;
 
 namespace System.Windows.Forms
@@ -10,14 +10,14 @@ namespace System.Windows.Forms
         public void AddToStartup()
         {
             ApplicationExtensions.AddApplicationToStartup();
-            Assert.IsTrue(ApplicationExtensions.StartApplicationOnStartupEnabled());
+            Assert.That(ApplicationExtensions.StartApplicationOnStartupEnabled(),Is.True);
         }
 
         [Test]
         public void RemoveFromStartup()
         {
             ApplicationExtensions.RemoveApplicationFromStartup();
-            Assert.IsFalse(ApplicationExtensions.StartApplicationOnStartupEnabled());
+            Assert.That(ApplicationExtensions.StartApplicationOnStartupEnabled(),Is.False);
         }
 
 
@@ -28,11 +28,11 @@ namespace System.Windows.Forms
             {
                 key.SetValue(Application.ProductName, "\"" + "DummyPath" + "\"");
             }
-            Assert.IsTrue(GetStartupKeyValue().Contains("DummyPath"));
+            Assert.That(GetStartupKeyValue().Contains("DummyPath"),Is.True);
 
             ApplicationExtensions.CheckAndUpdateApplicationStartupPath();
 
-            Assert.IsFalse(GetStartupKeyValue().Contains("DummyPath"));
+            Assert.That(GetStartupKeyValue().Contains("DummyPath"),Is.False);
         }
 
 
@@ -43,11 +43,11 @@ namespace System.Windows.Forms
             {
                 key.SetValue(Application.ProductName, "\"" + "DummyPath" + "\" -a -d Data=\"Test Data\"");
             }
-            Assert.IsTrue(GetStartupKeyValue().Contains("DummyPath"));
+            Assert.That(GetStartupKeyValue().Contains("DummyPath"),Is.True);
 
             ApplicationExtensions.CheckAndUpdateApplicationStartupPath();
 
-            Assert.IsTrue(GetStartupKeyValue().Contains(" -a -d Data=\"Test Data\""));
+            Assert.That(GetStartupKeyValue().Contains(" -a -d Data=\"Test Data\""),Is.True);
         }
 
 

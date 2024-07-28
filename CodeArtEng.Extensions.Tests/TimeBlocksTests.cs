@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -13,22 +13,22 @@ namespace ExtensionsTests
         public void TestStartTime()
         {
             var timeBlock = new TimeBlock();
-            Assert.AreEqual(DateTime.MinValue, timeBlock.StartTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(DateTime.MinValue));
 
             var newStartTime = DateTime.Now;
             timeBlock.StartTime = newStartTime;
-            Assert.AreEqual(newStartTime, timeBlock.StartTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(newStartTime));
         }
 
         [Test]
         public void TestEndTime()
         {
             var timeBlock = new TimeBlock();
-            Assert.AreEqual(DateTime.MinValue, timeBlock.EndTime);
+            Assert.That(timeBlock.EndTime,Is.EqualTo(DateTime.MinValue));
 
             var newEndTime = DateTime.Now;
             timeBlock.EndTime = newEndTime;
-            Assert.AreEqual(newEndTime, timeBlock.EndTime);
+            Assert.That(timeBlock.EndTime,Is.EqualTo(newEndTime));
         }
 
         [Test]
@@ -40,32 +40,32 @@ namespace ExtensionsTests
             timeBlock.StartTime = startTime;
             timeBlock.EndTime = endTime;
 
-            Assert.AreEqual(TimeSpan.FromHours(1), timeBlock.Duration);
+            Assert.That(timeBlock.Duration,Is.EqualTo(TimeSpan.FromHours(1)));
 
             var newDuration = TimeSpan.FromMinutes(30);
             timeBlock.Duration = newDuration;
-            Assert.AreEqual(startTime.AddMinutes(30), timeBlock.EndTime);
+            Assert.That(timeBlock.EndTime,Is.EqualTo(startTime.AddMinutes(30)));
         }
 
         [Test]
         public void TestChildrens()
         {
             var timeBlock = new TimeBlock();
-            Assert.IsNull(timeBlock.Childrens);
+            Assert.That(timeBlock.Childrens,Is.Null);
 
             var children = new List<TimeBlock> { new TimeBlock(), new TimeBlock() };
             timeBlock.Childrens = children;
-            Assert.AreEqual(children, timeBlock.Childrens);
+            Assert.That(timeBlock.Childrens,Is.EqualTo(children));
         }
 
         [Test]
         public void TestHasChildren()
         {
             var timeBlock = new TimeBlock();
-            Assert.IsFalse(timeBlock.HasChildren);
+            Assert.That(timeBlock.HasChildren,Is.False);
 
             timeBlock.Childrens = new List<TimeBlock> { new TimeBlock() };
-            Assert.IsTrue(timeBlock.HasChildren);
+            Assert.That(timeBlock.HasChildren,Is.True);
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace ExtensionsTests
             timeBlock.StartTime = startTime;
 
             timeBlock.DurationInSeconds(60);
-            Assert.AreEqual(startTime.AddSeconds(60), timeBlock.EndTime);
+            Assert.That(timeBlock.EndTime,Is.EqualTo(startTime.AddSeconds(60)));
         }
 
         [Test]
@@ -91,9 +91,9 @@ namespace ExtensionsTests
             var timeBlock2 = new TimeBlock { StartTime = startTime2, EndTime = endTime2 };
 
             var grouped = TimeBlock.Groups(timeBlock1, timeBlock2);
-            Assert.AreEqual(2, grouped.Length);
-            Assert.AreEqual(timeBlock1.Duration, grouped[0].Duration);
-            Assert.AreEqual(timeBlock2.Duration, grouped[1].Duration);
+            Assert.That(grouped.Length,Is.EqualTo(2));
+            Assert.That(grouped[0].Duration,Is.EqualTo(timeBlock1.Duration));
+            Assert.That(grouped[1].Duration,Is.EqualTo(timeBlock2.Duration));
         }
 
         [Test]
@@ -111,27 +111,27 @@ namespace ExtensionsTests
             var grouped = TimeBlock.Groups(timeBlock3, timeBlock1, timeBlock5, timeBlock2, timeBlock4);
 
             // Verify the groups
-            Assert.AreEqual(2, grouped.Length);
+            Assert.That(grouped.Length,Is.EqualTo(2));
 
             // Verify the first group
             var group1 = grouped[0];
-            Assert.AreEqual(new DateTime(2024, 7, 14, 8, 0, 0), group1.StartTime);
-            Assert.AreEqual(new DateTime(2024, 7, 14, 10, 0, 0), group1.EndTime);
-            Assert.AreEqual(3, group1.Childrens.Count);
-            Assert.AreEqual(TimeSpan.FromHours(2), group1.Duration);
+            Assert.That(group1.StartTime,Is.EqualTo(new DateTime(2024, 7, 14, 8, 0, 0)));
+            Assert.That(group1.EndTime,Is.EqualTo(new DateTime(2024, 7, 14, 10, 0, 0)));
+            Assert.That(group1.Childrens.Count,Is.EqualTo(3));
+            Assert.That(group1.Duration,Is.EqualTo(TimeSpan.FromHours(2)));
 
             // Verify the second group
             var group2 = grouped[1];
-            Assert.AreEqual(new DateTime(2024, 7, 14, 10, 30, 0), group2.StartTime);
-            Assert.AreEqual(new DateTime(2024, 7, 14, 12, 0, 0), group2.EndTime);
-            Assert.AreEqual(2, group2.Childrens.Count);
-            Assert.AreEqual(TimeSpan.FromHours(1.5), group2.Duration);
+            Assert.That(group2.StartTime,Is.EqualTo(new DateTime(2024, 7, 14, 10, 30, 0)));
+            Assert.That(group2.EndTime,Is.EqualTo(new DateTime(2024, 7, 14, 12, 0, 0)));
+            Assert.That(group2.Childrens.Count,Is.EqualTo(2));
+            Assert.That(group2.Duration,Is.EqualTo(TimeSpan.FromHours(1.5)));
         }
 
         [Test]
         public void TestInvalidDurationInSeconds()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                        Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
                 var timeBlock = new TimeBlock();
                 timeBlock.DurationInSeconds(-10); // Negative duration should throw an exception
@@ -142,22 +142,22 @@ namespace ExtensionsTests
         public void TestNullChildrens()
         {
             var timeBlock = new TimeBlock();
-            Assert.IsNull(timeBlock.Childrens); // Childrens should be null by default
-            Assert.IsFalse(timeBlock.HasChildren); // HasChildren should be false when Childrens is null
+            Assert.That(timeBlock.Childrens,Is.Null); // Childrens should be null by default
+            Assert.That(timeBlock.HasChildren,Is.False); // HasChildren should be false when Childrens is null
         }
 
         [Test]
         public void TestGroupsWithNullItems()
         {
             var grouped = TimeBlock.Groups(null);
-            Assert.IsNull(grouped); // Grouping null items should return null
+            Assert.That(grouped,Is.Null); // Grouping null items should return null
         }
 
         [Test]
         public void TestGroupsWithEmptyItems()
         {
             var grouped = TimeBlock.Groups();
-            Assert.AreEqual(0, grouped.Length); // Grouping empty items should return an empty array
+            Assert.That(grouped.Length,Is.EqualTo(0)); // Grouping empty items should return an empty array
         }
 
         [Test]
@@ -169,9 +169,9 @@ namespace ExtensionsTests
 
             var grouped = TimeBlock.Groups(timeBlock1, timeBlock2, timeBlock3);
 
-            Assert.AreEqual(1, grouped.Length); // All time blocks overlap, so there should be only one group
-            Assert.AreEqual(new DateTime(2024, 7, 14, 8, 0, 0), grouped[0].StartTime);
-            Assert.AreEqual(new DateTime(2024, 7, 14, 10, 0, 0), grouped[0].EndTime);
+            Assert.That(grouped.Length,Is.EqualTo(1)); // All time blocks overlap, so there should be only one group
+            Assert.That(grouped[0].StartTime,Is.EqualTo(new DateTime(2024, 7, 14, 8, 0, 0)));
+            Assert.That(grouped[0].EndTime,Is.EqualTo(new DateTime(2024, 7, 14, 10, 0, 0)));
         }
 
         [Test]
@@ -183,7 +183,7 @@ namespace ExtensionsTests
                 EndTime = new DateTime(2024, 7, 14, 9, 0, 0) // EndTime is before StartTime
             };
 
-            Assert.IsTrue(timeBlock.Duration < TimeSpan.Zero); // Duration should be negative
+            Assert.That(timeBlock.Duration < TimeSpan.Zero,Is.True); // Duration should be negative
         }
 
         [Test]
@@ -197,8 +197,8 @@ namespace ExtensionsTests
 
             timeBlock.Offset(3600); // Offset by 1 hour
 
-            Assert.AreEqual(new DateTime(2024, 1, 1, 13, 0, 0), timeBlock.StartTime);
-            Assert.AreEqual(new DateTime(2024, 1, 1, 14, 0, 0), timeBlock.EndTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(new DateTime(2024, 1, 1, 13, 0, 0)));
+            Assert.That(timeBlock.EndTime,Is.EqualTo(new DateTime(2024, 1, 1, 14, 0, 0)));
         }
 
         [Test]
@@ -212,8 +212,8 @@ namespace ExtensionsTests
 
             timeBlock.Offset(-1800); // Offset by -30 minutes
 
-            Assert.AreEqual(new DateTime(2024, 1, 1, 11, 30, 0), timeBlock.StartTime);
-            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 30, 0), timeBlock.EndTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(new DateTime(2024, 1, 1, 11, 30, 0)));
+            Assert.That(timeBlock.EndTime,Is.EqualTo(new DateTime(2024, 1, 1, 12, 30, 0)));
         }
 
         [Test]
@@ -227,8 +227,8 @@ namespace ExtensionsTests
 
             timeBlock.Offset(TimeSpan.FromMinutes(45));
 
-            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 45, 0), timeBlock.StartTime);
-            Assert.AreEqual(new DateTime(2024, 1, 1, 13, 45, 0), timeBlock.EndTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(new DateTime(2024, 1, 1, 12, 45, 0)));
+            Assert.That(timeBlock.EndTime,Is.EqualTo(new DateTime(2024, 1, 1, 13, 45, 0)));
         }
 
         [Test]
@@ -242,8 +242,8 @@ namespace ExtensionsTests
 
             timeBlock.Extend(1800); // Extend by 30 minutes
 
-            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 0, 0), timeBlock.StartTime);
-            Assert.AreEqual(new DateTime(2024, 1, 1, 13, 30, 0), timeBlock.EndTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(new DateTime(2024, 1, 1, 12, 0, 0)));
+            Assert.That(timeBlock.EndTime,Is.EqualTo(new DateTime(2024, 1, 1, 13, 30, 0)));
         }
 
         [Test]
@@ -257,8 +257,8 @@ namespace ExtensionsTests
 
             timeBlock.Extend(-900); // Extend by -15 minutes
 
-            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 0, 0), timeBlock.StartTime);
-            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 45, 0), timeBlock.EndTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(new DateTime(2024, 1, 1, 12, 0, 0)));
+            Assert.That(timeBlock.EndTime,Is.EqualTo(new DateTime(2024, 1, 1, 12, 45, 0)));
         }
 
         [Test]
@@ -272,8 +272,8 @@ namespace ExtensionsTests
 
             timeBlock.Extend(TimeSpan.FromMinutes(15));
 
-            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 0, 0), timeBlock.StartTime);
-            Assert.AreEqual(new DateTime(2024, 1, 1, 13, 15, 0), timeBlock.EndTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(new DateTime(2024, 1, 1, 12, 0, 0)));
+            Assert.That(timeBlock.EndTime,Is.EqualTo(new DateTime(2024, 1, 1, 13, 15, 0)));
         }
 
         [Test]
@@ -287,8 +287,8 @@ namespace ExtensionsTests
 
             timeBlock.Extend(TimeSpan.FromMinutes(-20));
 
-            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 0, 0), timeBlock.StartTime);
-            Assert.AreEqual(new DateTime(2024, 1, 1, 12, 40, 0), timeBlock.EndTime);
+            Assert.That(timeBlock.StartTime,Is.EqualTo(new DateTime(2024, 1, 1, 12, 0, 0)));
+            Assert.That(timeBlock.EndTime,Is.EqualTo(new DateTime(2024, 1, 1, 12, 40, 0)));
         }
     }
 
