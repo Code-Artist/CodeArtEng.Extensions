@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CodeArtEng.Extensions
+namespace System
 {
     public class TimeBlock
     {
