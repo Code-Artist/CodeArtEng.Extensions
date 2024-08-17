@@ -1,11 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace System
 {
     public class TimeBlock
     {
+        /// <summary>
+        /// Default constructor 
+        /// </summary>
+        public TimeBlock() { }
+
+        /// <summary>
+        /// Create new instance with start time and end time
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        public TimeBlock(DateTime startTime, DateTime endTime)
+        {
+            StartTime = startTime;
+            EndTime = endTime;
+        }
+
+        /// <summary>
+        /// Create new instance with start time and durations.
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="durationInSeconds"></param>
+        public TimeBlock(DateTime startTime, double durationInSeconds)
+        {
+            StartTime = startTime;
+            DurationInSeconds(durationInSeconds);
+        }
+
+
         /// <summary>
         /// Represents the start time of the time block. Default is DateTime.MinValue.
         /// </summary>
