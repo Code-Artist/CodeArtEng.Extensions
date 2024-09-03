@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -39,6 +40,12 @@ namespace CodeArtEngExtensionsDemo
         private void DgvEnable_Click(object sender, EventArgs e)
         {
             Dgv.EnableAdvanceControl();
+            Dgv.CellValuePastedEventAdd(valuePasted);
+        }
+
+        private void valuePasted(object sender, DataGridViewCellEventArgs e)
+        {
+            Trace.WriteLine($"Value pasted at cell {e.RowIndex}, {e.ColumnIndex} = {Dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString()}");
         }
 
         private void DgvCommit_Click(object sender, EventArgs e)
@@ -49,6 +56,10 @@ namespace CodeArtEngExtensionsDemo
         private void DgvRevert_Click(object sender, EventArgs e)
         {
             Dgv.RevertChanges();
+        }
+
+        private void Dgv_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
         }
     }
 }

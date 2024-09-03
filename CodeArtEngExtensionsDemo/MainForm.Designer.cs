@@ -86,6 +86,7 @@
             this.Dgv.Name = "Dgv";
             this.Dgv.Size = new System.Drawing.Size(786, 378);
             this.Dgv.TabIndex = 1;
+            this.Dgv.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.Dgv_CellEndEdit);
             // 
             // Column1
             // 

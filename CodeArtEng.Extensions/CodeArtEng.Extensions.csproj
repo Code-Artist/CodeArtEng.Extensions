@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>net48;net452;net6.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>2.5.2</Version>
+    <Version>2.5.3</Version>
     <Description>Extensions Methods and Classes for WinForms</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Code-Artist/CodeArtEng.Extensions</PackageProjectUrl>
     <PackageIcon>CAELogoSmall.png</PackageIcon>
     <RepositoryUrl>https://github.com/Code-Artist/CodeArtEng.Extensions</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <PackageReleaseNotes>Update namespace.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added CellValuePastedEvent for DataGridViewEx</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Code Artist</Authors>
     <Company>Code Art Engineering</Company>
