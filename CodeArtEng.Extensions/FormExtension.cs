@@ -3,6 +3,8 @@ using System.Drawing;
 using System.IO;
 using System.Security;
 using System.Runtime.InteropServices;
+using System.Reflection;
+using CodeArtEng.Extensions;
 
 namespace System.Windows.Forms
 {
@@ -15,7 +17,7 @@ namespace System.Windows.Forms
         /// Set from Icon with application Icon.
         /// </summary>
         /// <param name="form"></param>
-        public static void SetAppIcon(this Form form )
+        public static void SetAppIcon(this Form form)
         {
             //form.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath); //This code does not support network path.
             form.Icon = ExtractAssociatedIcon(Application.ExecutablePath);
@@ -23,7 +25,7 @@ namespace System.Windows.Forms
 
         public static bool IsOutsideViewRegion(this Form form)
         {
-            foreach(Screen ptrScren in Screen.AllScreens)
+            foreach (Screen ptrScren in Screen.AllScreens)
             {
                 if (ptrScren.Bounds.Contains(form.Location)) return false;
             }
@@ -98,6 +100,23 @@ namespace System.Windows.Forms
             internal static extern IntPtr ExtractAssociatedIcon(HandleRef hInst, StringBuilder iconPath, ref int index);
         }
 
-        #endregion  
+        #endregion
+
+        /// <summary>
+        /// Enables or disables double buffering for all child controls of the form, searching recursively.
+        /// </summary>
+        /// <param name="form">The form on which to enable or disable double buffering for all child controls.</param>
+        /// <param name="enable">Indicates whether to enable or disable double buffering for the child controls.</param>
+        public static void SetDoubleBufferingForAllControls(this Form form, bool enable)
+        {
+            if (form == null) throw new ArgumentNullException(nameof(form));
+
+            // Recursively set double buffering for all controls in the form
+            foreach (Control control in form.Controls)
+            {
+                control.SetDoubleBuffering(enable);
+            }
+        }
+
     }
 }
