@@ -47,7 +47,7 @@ namespace CodeArtEngExtensionsDemo
 
         private void valueChanging(object sender, DataGridViewCellExEventArgs e)
         {
-            Trace.WriteLine($"Value updating at cell {e.RowIndex}, {e.ColumnIndex} = {e.NewValue.ToString()}");
+            Trace.WriteLine($"Value updating at cell {e.RowIndex}, {e.ColumnIndex} = {e.NewValue?.ToString()}");
         }
 
         private void DgvCommit_Click(object sender, EventArgs e)
