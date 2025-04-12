@@ -42,12 +42,12 @@ namespace CodeArtEngExtensionsDemo
         private void DgvEnable_Click(object sender, EventArgs e)
         {
             Dgv.EnableAdvanceControl();
-            Dgv.CellValuePastedEventAdd(valuePasted);
+            Dgv.CellValueChangingEventAdd(valueChanging);
         }
 
-        private void valuePasted(object sender, DataGridViewCellEventArgs e)
+        private void valueChanging(object sender, DataGridViewCellExEventArgs e)
         {
-            Trace.WriteLine($"Value pasted at cell {e.RowIndex}, {e.ColumnIndex} = {Dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString()}");
+            Trace.WriteLine($"Value updating at cell {e.RowIndex}, {e.ColumnIndex} = {e.NewValue.ToString()}");
         }
 
         private void DgvCommit_Click(object sender, EventArgs e)
@@ -62,6 +62,12 @@ namespace CodeArtEngExtensionsDemo
 
         private void Dgv_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            Trace.WriteLine("End edit triggered.");
+        }
+
+        private void BtCount_Click(object sender, EventArgs e)
+        {
+            Trace.WriteLine("Modified Cells = " + Dgv.ModifiedCells().Count());
         }
     }
 }

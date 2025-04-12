@@ -30,6 +30,9 @@ After making changes to the grid:
 // Check if there are uncommitted changes
 if (myDataGridView.HasChanges())
 {
+    //Query modified cells, review changes.
+    DataGridViewCell[] cellsChanged = myDataGridView.ModifiedCells();
+
     // Commit all changes
     myDataGridView.CommitChanges();
 
@@ -37,11 +40,15 @@ if (myDataGridView.HasChanges())
     myDataGridView.RevertChanges();
 }
 ```
+
 Modified cells are highlighted with a different background colour (default is light yellow). You can also change the default colour used to highlight modified cells:
 
 ```csharp
+Color currentColor = myDataGridView.GetModifiedCellColor();
 myDataGridView.SetModifiedCellColor(Color.LightBlue);
 ```
+
+
 
 ### 2. Smart Editing
 
@@ -56,6 +63,29 @@ The class adds several keyboard shortcuts to speed up data entry:
 
 The paste function in `DataGridViewEx` is significantly improved to handle multi-cell clipboard content more efficiently. It can intelligently paste single values across multiple selected cells or distribute multi-cell content starting from the top-left of the selection. The function respects the `DataGridView` boundaries, handles different data types appropriately (including boolean values for checkbox columns), and maintains the structure of copied data.
 
+To receive notifications when a value is pasted into a cell, manage event subscriptions using `CellValueChangingEventAdd` and `CellValueChangingEventRemove` for the `CellValueChanging` event which triggered when cell value is about to change by paste and delete operation.
+
+The `EndEdit` event isn't suitable in this scenario because it requires the cell to first enter edit mode before it can be triggered.
+
+``` csharp
+private void DgvEnable_Click(object sender, EventArgs e)
+{
+    Dgv.EnableAdvanceControl();
+    Dgv.CellValueChangingEventAdd(valueChanging);
+}
+
+private void valueChanging(object sender, DataGridViewCellEventArgs e)
+{
+    Trace.WriteLine($"Value updating at cell {e.RowIndex}, {e.ColumnIndex} = {e.NewValue.ToString()}");
+    
+    //Option: Review new value and update if necessary.
+    if(e.NewValue ... ) e.NewValue = ... ;
+    
+    //Option: Cancel update for this cell when necessary
+    e.Cancel = true;   
+}
+
+```
 
 ## Benefits
 

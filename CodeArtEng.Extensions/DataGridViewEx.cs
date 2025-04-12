@@ -5,6 +5,17 @@ using System.Linq;
 
 namespace System.Windows.Forms
 {
+    public class DataGridViewCellExEventArgs : DataGridViewCellEventArgs
+    {
+        public object NewValue { get; set; }
+        public bool Cancel { get; set; } = false;
+        public DataGridViewCellExEventArgs(int columnIndex, int rowIndex, object value  ) 
+            : base(columnIndex, rowIndex)
+        {
+            NewValue = value;
+        }
+    }
+
     /// <summary>
     /// Provides extended functionality for the <see cref="DataGridView"/> control, including change tracking,
     /// smart editing features, and enhanced clipboard operations. This static class offers methods
@@ -14,21 +25,29 @@ namespace System.Windows.Forms
     /// </summary>
     public static class DataGridViewEx
     {
+        /// <summary>
+        /// Represents a handler for extended functionality of a <see cref="DataGridView"/> control.
+        /// </summary>
         internal class DataGridViewExHandler
         {
             public DataGridView DataGrid { get; private set; }
             public Color ModifiedCellColor { get; set; } = Color.LightYellow;
             public Dictionary<DataGridViewCell, DataGridViewCellTracker> CellTrackers = new Dictionary<DataGridViewCell, DataGridViewCellTracker>();
             public DataGridViewExHandler(DataGridView sender) { DataGrid = sender; }
-
-            public event EventHandler<DataGridViewCellEventArgs> CellValuePasted;
-            public void OnCellValuePasted(DataGridViewCell sender)
+            /// <summary>
+            /// Cell value chaging event.
+            /// </summary>
+            public event EventHandler<DataGridViewCellExEventArgs> CellValueChanging;
+            
+            public void OnCellValueChanging(DataGridViewCellExEventArgs arg)
             {
-                DataGridViewCellEventArgs e = new DataGridViewCellEventArgs(sender.ColumnIndex, sender.RowIndex);
-                CellValuePasted?.Invoke(this, e);
+                CellValueChanging?.Invoke(DataGrid, arg);   
             }
         }
 
+        /// <summary>
+        /// Represents a tracker for a cell in a <see cref="DataGridView"/> control.
+        /// </summary>
         internal class DataGridViewCellTracker
         {
             public DataGridViewCell Cell { get; set; }
@@ -45,6 +64,12 @@ namespace System.Windows.Forms
             if (DataGrids.ContainsKey(sender)) return DataGrids[sender];
             return EnableAdvanceControlInt(sender);
         }
+        /// <summary>
+        /// Enables advanced control features for a DataGridView.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         private static DataGridViewExHandler EnableAdvanceControlInt(this DataGridView sender)
         {
             if (sender == null) throw new ArgumentNullException("sender");
@@ -121,18 +146,56 @@ namespace System.Windows.Forms
             return dgvEx.CellTrackers.Any(n => n.Value.IsModified == true);
         }
 
-        public static void CellValuePastedEventAdd(this DataGridView sender, EventHandler<DataGridViewCellEventArgs> eventHandler)
+        /// <summary>
+        /// Gets the modified cell color for the DataGridView.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        public static Color GetModifiedCellColor(this DataGridView sender) => GetDataGridViewExtended(sender).ModifiedCellColor;
+        /// <summary>
+        /// Sets the modified cell color for the DataGridView.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="color"></param>
+        public static void SetModifiedCellColor(this DataGridView sender, Color color) => GetDataGridViewExtended(sender).ModifiedCellColor = color;
+
+        /// <summary>
+        /// Gets the list of modified cells in the DataGridView.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static DataGridViewCell[] ModifiedCells(this DataGridView sender)
         {
             if (sender == null) throw new ArgumentNullException("sender");
-            DataGridViewExHandler data = GetDataGridViewExtended(sender);
-            data.CellValuePasted += eventHandler;
+            DataGridViewExHandler dgvEx = GetDataGridViewExtended(sender);
+            return dgvEx.CellTrackers.Where(n => n.Value.IsModified).Select(n => n.Value.Cell).ToArray();
         }
 
-        public static void CellValuePastedEventRemove(this DataGridView sender, EventHandler<DataGridViewCellEventArgs> eventHandler)
+        /// <summary>
+        /// Subscribe to CellValuePasted event which is triggered when a cell value is pasted.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventHandler"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void CellValueChangingEventAdd(this DataGridView sender, EventHandler<DataGridViewCellExEventArgs> eventHandler)
         {
             if (sender == null) throw new ArgumentNullException("sender");
             DataGridViewExHandler data = GetDataGridViewExtended(sender);
-            data.CellValuePasted -= eventHandler;
+            data.CellValueChanging += eventHandler;
+        }
+
+        /// <summary>
+        /// Unsubscribe from CellValuePasted event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventHandler"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void CellValueChangingEventRemove(this DataGridView sender, EventHandler<DataGridViewCellExEventArgs> eventHandler)
+        {
+            if (sender == null) throw new ArgumentNullException("sender");
+            DataGridViewExHandler data = GetDataGridViewExtended(sender);
+            data.CellValueChanging -= eventHandler;
         }
 
         #endregion
@@ -202,7 +265,6 @@ namespace System.Windows.Forms
         }
         #endregion
 
-
         #region [ Smart Editing ]
 
         /// <summary>
@@ -218,9 +280,7 @@ namespace System.Windows.Forms
                 {
                     if (!c.ReadOnly && c.OwningColumn.CellType == typeof(DataGridViewTextBoxCell))
                     {
-                        dgvEx.BeforeCellChange(c);
-                        c.Value = null;
-                        dgvEx.AfterCellChange(c);
+                        dgvEx.ChangeCellValue(c, null);
                     }
                 }
             }
@@ -250,7 +310,7 @@ namespace System.Windows.Forms
                 for (int c = startCol; c <= endCol; c++)
                 {
                     DataGridViewCell cellAbove = dgv[c, startRow - 1];
-                    dgv[c, startRow].Value = cellAbove.Value;
+                    dgvEx.ChangeCellValue(dgv[c, startRow], cellAbove.Value);
                 }
             }
             else if (totalRow > 1)
@@ -260,7 +320,7 @@ namespace System.Windows.Forms
                     for (int r = startRow + 1; r <= endRow; r++)
                     {
                         DataGridViewCell cell = dgv[c, r];
-                        dgvEx.PasteCellValue(cell, dgv[c - 1, r].Value);
+                        dgvEx.ChangeCellValue(cell, dgv[c, r - 1].Value);
                     }
                 }
             }
@@ -290,7 +350,7 @@ namespace System.Windows.Forms
                 for (int r = startRow; r <= endRow; r++)
                 {
                     DataGridViewCell cellToLeft = dgv[startCol - 1, r];
-                    dgv[startCol, r].Value = cellToLeft.Value;
+                    dgvEx.ChangeCellValue(dgv[startCol, r], cellToLeft.Value);
                 }
             }
             else if (totalCol > 1)
@@ -300,7 +360,7 @@ namespace System.Windows.Forms
                     for (int c = startCol + 1; c <= endCol; c++)
                     {
                         DataGridViewCell cell = dgv[c, r];
-                        dgvEx.PasteCellValue(cell, dgv[c - 1, r].Value);
+                        dgvEx.ChangeCellValue(cell, dgv[c - 1, r].Value);
                     }
                 }
             }
@@ -320,7 +380,7 @@ namespace System.Windows.Forms
             {
                 //Clipboard contains single value, paste to all cells
                 foreach (DataGridViewCell cell in dgv.SelectedCells)
-                    dgvEx.PasteCellValue(cell, clipboardText);
+                    dgvEx.ChangeCellValue(cell, clipboardText);
                 return;
             }
 
@@ -333,7 +393,7 @@ namespace System.Windows.Forms
                     for (int i = 0; i < clipBoardCells.Length && col + i < dgv.Columns.Count; i++)
                     {
                         DataGridViewCell ptrCell = dgv[col + i, row];
-                        dgvEx.PasteCellValue(ptrCell, clipBoardCells[i]);
+                        dgvEx.ChangeCellValue(ptrCell, clipBoardCells[i]);
                     }
                     row++;
                 }
@@ -345,19 +405,22 @@ namespace System.Windows.Forms
             dgv.RefreshEdit();
         }
 
-        private static void PasteCellValue(this DataGridViewExHandler dgvEx, DataGridViewCell ptrCell, object value)
+        private static void ChangeCellValue(this DataGridViewExHandler dgvEx, DataGridViewCell ptrCell, object value)
         {
             BeforeCellChange(dgvEx, ptrCell);
             if (ptrCell is DataGridViewCheckBoxCell)
             {
                 bool result = false;
                 if (bool.TryParse(value.ToString(), out result))
-                    ptrCell.Value = result;
+                    value = result;
             }
-            else
-                ptrCell.Value = value;
+
+            DataGridViewCellExEventArgs a = new DataGridViewCellExEventArgs(ptrCell.ColumnIndex, ptrCell.RowIndex, value);
+            dgvEx.OnCellValueChanging(a);
+            if(a.Cancel) return;
+
+            ptrCell.Value = a.NewValue;
             AfterCellChange(dgvEx, ptrCell);
-            dgvEx.OnCellValuePasted(ptrCell);
         }
 
         #endregion
@@ -371,7 +434,6 @@ namespace System.Windows.Forms
         /// </summary>
         private static DataGridViewCellTracker GetCellTracker(this DataGridViewExHandler dgvEx, DataGridViewCell cell)
         {
-            Debug.WriteLine($"Col = {cell.ColumnIndex}, row = {cell.RowIndex}");
             if (!dgvEx.CellTrackers.ContainsKey(cell)) return null;
             return dgvEx.CellTrackers[cell];
         }
@@ -398,9 +460,6 @@ namespace System.Windows.Forms
                 ptrTracker.IsModified = !ptrTracker.Cell.Value.Equals(ptrTracker.OriginalValue);
             ptrTracker.Cell.Style.BackColor = ptrTracker.IsModified ? ModifiedCellColor : dgv.DefaultCellStyle.BackColor;
         }
-
-        public static Color GetModifiedCellColor(this DataGridView sender) => GetDataGridViewExtended(sender).ModifiedCellColor;
-        public static void SetModifiedCellColor(this DataGridView sender, Color color) => GetDataGridViewExtended(sender).ModifiedCellColor = color;
 
         #endregion
 

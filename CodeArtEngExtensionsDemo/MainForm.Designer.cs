@@ -42,6 +42,7 @@
             this.DgvRevert = new System.Windows.Forms.Button();
             this.DgvCommit = new System.Windows.Forms.Button();
             this.DgvEnable = new System.Windows.Forms.Button();
+            this.BtCount = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Dgv)).BeginInit();
@@ -125,6 +126,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.BtCount);
             this.panel1.Controls.Add(this.DgvRevert);
             this.panel1.Controls.Add(this.DgvCommit);
             this.panel1.Controls.Add(this.DgvEnable);
@@ -164,6 +166,16 @@
             this.DgvEnable.UseVisualStyleBackColor = true;
             this.DgvEnable.Click += new System.EventHandler(this.DgvEnable_Click);
             // 
+            // BtCount
+            // 
+            this.BtCount.Location = new System.Drawing.Point(706, 9);
+            this.BtCount.Name = "BtCount";
+            this.BtCount.Size = new System.Drawing.Size(75, 23);
+            this.BtCount.TabIndex = 3;
+            this.BtCount.Text = "Count";
+            this.BtCount.UseVisualStyleBackColor = true;
+            this.BtCount.Click += new System.EventHandler(this.BtCount_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -196,6 +208,7 @@
         private System.Windows.Forms.Button DgvRevert;
         private System.Windows.Forms.Button DgvCommit;
         private System.Windows.Forms.Button DgvEnable;
+        private System.Windows.Forms.Button BtCount;
     }
 }
 
