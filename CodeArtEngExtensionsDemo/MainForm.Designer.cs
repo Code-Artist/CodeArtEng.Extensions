@@ -39,10 +39,12 @@
             this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.BtCount = new System.Windows.Forms.Button();
             this.DgvRevert = new System.Windows.Forms.Button();
             this.DgvCommit = new System.Windows.Forms.Button();
             this.DgvEnable = new System.Windows.Forms.Button();
-            this.BtCount = new System.Windows.Forms.Button();
+            this.BtAddRow = new System.Windows.Forms.Button();
+            this.BtSetModified = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Dgv)).BeginInit();
@@ -126,6 +128,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.BtSetModified);
+            this.panel1.Controls.Add(this.BtAddRow);
             this.panel1.Controls.Add(this.BtCount);
             this.panel1.Controls.Add(this.DgvRevert);
             this.panel1.Controls.Add(this.DgvCommit);
@@ -135,6 +139,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(786, 40);
             this.panel1.TabIndex = 0;
+            // 
+            // BtCount
+            // 
+            this.BtCount.Location = new System.Drawing.Point(706, 9);
+            this.BtCount.Name = "BtCount";
+            this.BtCount.Size = new System.Drawing.Size(75, 23);
+            this.BtCount.TabIndex = 3;
+            this.BtCount.Text = "Count";
+            this.BtCount.UseVisualStyleBackColor = true;
+            this.BtCount.Click += new System.EventHandler(this.BtCount_Click);
             // 
             // DgvRevert
             // 
@@ -166,15 +180,25 @@
             this.DgvEnable.UseVisualStyleBackColor = true;
             this.DgvEnable.Click += new System.EventHandler(this.DgvEnable_Click);
             // 
-            // BtCount
+            // BtAddRow
             // 
-            this.BtCount.Location = new System.Drawing.Point(706, 9);
-            this.BtCount.Name = "BtCount";
-            this.BtCount.Size = new System.Drawing.Size(75, 23);
-            this.BtCount.TabIndex = 3;
-            this.BtCount.Text = "Count";
-            this.BtCount.UseVisualStyleBackColor = true;
-            this.BtCount.Click += new System.EventHandler(this.BtCount_Click);
+            this.BtAddRow.Location = new System.Drawing.Point(254, 9);
+            this.BtAddRow.Name = "BtAddRow";
+            this.BtAddRow.Size = new System.Drawing.Size(75, 23);
+            this.BtAddRow.TabIndex = 4;
+            this.BtAddRow.Text = "Add Row";
+            this.BtAddRow.UseVisualStyleBackColor = true;
+            this.BtAddRow.Click += new System.EventHandler(this.BtAddRow_Click);
+            // 
+            // BtSetModified
+            // 
+            this.BtSetModified.Location = new System.Drawing.Point(335, 9);
+            this.BtSetModified.Name = "BtSetModified";
+            this.BtSetModified.Size = new System.Drawing.Size(75, 23);
+            this.BtSetModified.TabIndex = 5;
+            this.BtSetModified.Text = "Set Modified";
+            this.BtSetModified.UseVisualStyleBackColor = true;
+            this.BtSetModified.Click += new System.EventHandler(this.BtSetModified_Click_1);
             // 
             // MainForm
             // 
@@ -209,6 +233,8 @@
         private System.Windows.Forms.Button DgvCommit;
         private System.Windows.Forms.Button DgvEnable;
         private System.Windows.Forms.Button BtCount;
+        private System.Windows.Forms.Button BtSetModified;
+        private System.Windows.Forms.Button BtAddRow;
     }
 }
 

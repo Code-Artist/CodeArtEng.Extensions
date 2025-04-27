@@ -9,7 +9,7 @@ namespace System.Windows.Forms
     {
         public object NewValue { get; set; }
         public bool Cancel { get; set; } = false;
-        public DataGridViewCellExEventArgs(int columnIndex, int rowIndex, object value  ) 
+        public DataGridViewCellExEventArgs(int columnIndex, int rowIndex, object value)
             : base(columnIndex, rowIndex)
         {
             NewValue = value;
@@ -38,10 +38,10 @@ namespace System.Windows.Forms
             /// Cell value chaging event.
             /// </summary>
             public event EventHandler<DataGridViewCellExEventArgs> CellValueChanging;
-            
+
             public void OnCellValueChanging(DataGridViewCellExEventArgs arg)
             {
-                CellValueChanging?.Invoke(DataGrid, arg);   
+                CellValueChanging?.Invoke(DataGrid, arg);
             }
         }
 
@@ -51,8 +51,18 @@ namespace System.Windows.Forms
         internal class DataGridViewCellTracker
         {
             public DataGridViewCell Cell { get; set; }
+            /// <summary>
+            /// Original value
+            /// </summary>
             public object OriginalValue { get; set; } = null;
+            /// <summary>
+            /// Cell is dirty, contain changes.
+            /// </summary>
             public bool IsModified { get; set; } = false;
+            /// <summary>
+            /// Cell modified state set manually by user, revert changes is not possible.
+            /// </summary>
+            public bool CanRevert { get; set; } = true;
         }
 
         #region [ Internal Methods ]
@@ -129,9 +139,54 @@ namespace System.Windows.Forms
 
             foreach (DataGridViewCellTracker t in data.CellTrackers.Where(n => n.Value.IsModified).Select(n => n.Value))
             {
+                if (!t.CanRevert) continue;
                 t.Cell.Value = t.OriginalValue;
                 t.IsModified = false;
                 t.Cell.Style.BackColor = sender.DefaultCellStyle.BackColor;
+            }
+        }
+
+        /// <summary>
+        /// Manually set cell state as modified. No changes for cell which already in modified state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="cell"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void SetCellModified(this DataGridView sender, int rowIndex, int cellIndex)
+        {
+            if (sender == null) throw new ArgumentNullException("sender");
+            DataGridViewExHandler dgvEx = GetDataGridViewExtended(sender);
+            DataGridViewCell cell = dgvEx.DataGrid.Rows[rowIndex].Cells[cellIndex];  
+
+            DataGridViewCellTracker ptrTracker = dgvEx.GetCellTracker(cell);
+            if (ptrTracker == null)
+            {
+                ptrTracker = new DataGridViewCellTracker() { Cell = cell };
+                dgvEx.CellTrackers[cell] = ptrTracker;
+            }
+
+            if (!ptrTracker.IsModified)
+            {
+                ptrTracker.IsModified = true;
+                ptrTracker.CanRevert = false;
+            }
+            AfterCellChange(dgvEx, cell);
+        }
+
+        /// <summary>
+        /// Manually set cell state as modified. No changes for cell which already in modified state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="rowIndex"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void SetRowModified(this DataGridView sender, int rowIndex)
+        {
+            if (sender == null) throw new ArgumentNullException("sender");
+            DataGridViewExHandler dgvEx = GetDataGridViewExtended(sender);
+            DataGridViewRow row = dgvEx.DataGrid.Rows[rowIndex];
+            foreach (DataGridViewCell cell in row.Cells)
+            {
+                SetCellModified(sender, cell.RowIndex, cell.ColumnIndex);
             }
         }
 
@@ -417,7 +472,7 @@ namespace System.Windows.Forms
 
             DataGridViewCellExEventArgs a = new DataGridViewCellExEventArgs(ptrCell.ColumnIndex, ptrCell.RowIndex, value);
             dgvEx.OnCellValueChanging(a);
-            if(a.Cancel) return;
+            if (a.Cancel) return;
 
             ptrCell.Value = a.NewValue;
             AfterCellChange(dgvEx, ptrCell);
@@ -454,10 +509,13 @@ namespace System.Windows.Forms
             DataGridView dgv = dgvEx.DataGrid;
 
             DataGridViewCellTracker ptrTracker = dgvEx.GetCellTracker(c);
-            if (ptrTracker.Cell.Value == null)
-                ptrTracker.IsModified = ptrTracker.OriginalValue != null;
-            else
-                ptrTracker.IsModified = !ptrTracker.Cell.Value.Equals(ptrTracker.OriginalValue);
+            if (ptrTracker.CanRevert)
+            {
+                if (ptrTracker.Cell.Value == null)
+                    ptrTracker.IsModified = ptrTracker.OriginalValue != null;
+                else
+                    ptrTracker.IsModified = !ptrTracker.Cell.Value.Equals(ptrTracker.OriginalValue);
+            }
             ptrTracker.Cell.Style.BackColor = ptrTracker.IsModified ? ModifiedCellColor : dgv.DefaultCellStyle.BackColor;
         }
 

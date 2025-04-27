@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -68,6 +69,17 @@ namespace CodeArtEngExtensionsDemo
         private void BtCount_Click(object sender, EventArgs e)
         {
             Trace.WriteLine("Modified Cells = " + Dgv.ModifiedCells().Count());
+        }
+
+        private void BtAddRow_Click(object sender, EventArgs e)
+        {
+            int r = Dgv.Rows.Add();
+            Dgv.SetRowModified(r);
+        }
+
+        private void BtSetModified_Click_1(object sender, EventArgs e)
+        {
+            Dgv.SetCellModified(Dgv.CurrentCell.RowIndex, Dgv.CurrentCell.ColumnIndex);
         }
     }
 }
