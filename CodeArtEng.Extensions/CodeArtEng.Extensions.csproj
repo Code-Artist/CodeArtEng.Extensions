@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>net48;net452;net6.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>2.6.1</Version>
-    <Description>Extensions Methods and Classes for WinForms</Description>
+    <Version>2.6.2</Version>
+    <Description>DataGridViewEx: Add CellValueChanged event</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Code-Artist/CodeArtEng.Extensions</PackageProjectUrl>
     <PackageIcon>CAELogoSmall.png</PackageIcon>

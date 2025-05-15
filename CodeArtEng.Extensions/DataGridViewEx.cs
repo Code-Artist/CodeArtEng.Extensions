@@ -7,12 +7,18 @@ namespace System.Windows.Forms
 {
     public class DataGridViewCellExEventArgs : DataGridViewCellEventArgs
     {
+        /// <summary>
+        /// New input value, update value if required.
+        /// </summary>
         public object NewValue { get; set; }
+        /// <summary>
+        /// Cancel change, revert to old value
+        /// </summary>
         public bool Cancel { get; set; } = false;
-        public DataGridViewCellExEventArgs(int columnIndex, int rowIndex, object value)
+        public DataGridViewCellExEventArgs(int columnIndex, int rowIndex, object newValue)
             : base(columnIndex, rowIndex)
         {
-            NewValue = value;
+            NewValue = newValue;
         }
     }
 
@@ -35,13 +41,19 @@ namespace System.Windows.Forms
             public Dictionary<DataGridViewCell, DataGridViewCellTracker> CellTrackers = new Dictionary<DataGridViewCell, DataGridViewCellTracker>();
             public DataGridViewExHandler(DataGridView sender) { DataGrid = sender; }
             /// <summary>
-            /// Cell value chaging event.
+            /// Cell value chaging event when cell value is pasted
             /// </summary>
             public event EventHandler<DataGridViewCellExEventArgs> CellValueChanging;
+            public event EventHandler<DataGridViewCellEventArgs> CellValueChanged;
 
             public void OnCellValueChanging(DataGridViewCellExEventArgs arg)
             {
                 CellValueChanging?.Invoke(DataGrid, arg);
+            }
+
+            public void OnCellValueChanged(DataGridViewCellEventArgs arg)
+            {
+                CellValueChanged?.Invoke(DataGrid, arg);
             }
         }
 
@@ -156,7 +168,7 @@ namespace System.Windows.Forms
         {
             if (sender == null) throw new ArgumentNullException("sender");
             DataGridViewExHandler dgvEx = GetDataGridViewExtended(sender);
-            DataGridViewCell cell = dgvEx.DataGrid.Rows[rowIndex].Cells[cellIndex];  
+            DataGridViewCell cell = dgvEx.DataGrid.Rows[rowIndex].Cells[cellIndex];
 
             DataGridViewCellTracker ptrTracker = dgvEx.GetCellTracker(cell);
             if (ptrTracker == null)
@@ -253,6 +265,20 @@ namespace System.Windows.Forms
             data.CellValueChanging -= eventHandler;
         }
 
+        public static void CellValueChangedEventAdd(this DataGridView sender, EventHandler<DataGridViewCellEventArgs> eventHandler)
+        {
+            if (sender == null) throw new ArgumentNullException("sender");
+            DataGridViewExHandler data = GetDataGridViewExtended(sender);
+            data.CellValueChanged += eventHandler;
+        }
+
+        public static void CellValueChangedEventRemove(this DataGridView sender, EventHandler<DataGridViewCellEventArgs> eventHandler)
+        {
+            if (sender == null) throw new ArgumentNullException("sender");
+            DataGridViewExHandler data = GetDataGridViewExtended(sender);
+            data.CellValueChanged -= eventHandler;
+        }
+
         #endregion
 
         #region [ DataGridView Events Subscription ]
@@ -304,7 +330,6 @@ namespace System.Windows.Forms
         {
             DataGridView dgv = sender as DataGridView;
             DataGridViewExHandler dgvEx = GetDataGridViewExtended(dgv);
-
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             AfterCellChange(dgvEx, dgv[e.ColumnIndex, e.RowIndex]);
         }
@@ -517,6 +542,7 @@ namespace System.Windows.Forms
                     ptrTracker.IsModified = !ptrTracker.Cell.Value.Equals(ptrTracker.OriginalValue);
             }
             ptrTracker.Cell.Style.BackColor = ptrTracker.IsModified ? ModifiedCellColor : dgv.DefaultCellStyle.BackColor;
+            dgvEx.OnCellValueChanged(new DataGridViewCellEventArgs(c.ColumnIndex, c.RowIndex));
         }
 
         #endregion

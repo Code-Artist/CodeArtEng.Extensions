@@ -44,11 +44,18 @@ namespace CodeArtEngExtensionsDemo
         {
             Dgv.EnableAdvanceControl();
             Dgv.CellValueChangingEventAdd(valueChanging);
+            Dgv.CellValueChangedEventAdd(valueChanged);
+        }
+
+        private void valueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            Trace.WriteLine("Value Changed: " + Dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString());
         }
 
         private void valueChanging(object sender, DataGridViewCellExEventArgs e)
         {
-            Trace.WriteLine($"Value updating at cell {e.RowIndex}, {e.ColumnIndex} = {e.NewValue?.ToString()}");
+            Trace.WriteLine($"Value updating at cell {e.RowIndex}, {e.ColumnIndex} = {e.NewValue?.ToString()}, " +
+                $"Current Value = {Dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString()}");
         }
 
         private void DgvCommit_Click(object sender, EventArgs e)
