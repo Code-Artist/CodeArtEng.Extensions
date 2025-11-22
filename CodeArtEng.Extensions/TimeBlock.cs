@@ -5,6 +5,15 @@ using System.Windows.Forms;
 
 namespace System
 {
+    /// <summary>
+    /// Represents a block of time defined by a start and end time, with optional duration and support for grouping and
+    /// child time blocks.
+    /// </summary>
+    /// <remarks>The TimeBlock class provides functionality for representing, manipulating, and grouping
+    /// intervals of time. It supports operations such as shifting, extending, and checking for overlaps between time
+    /// blocks. Child time blocks can be associated with a parent TimeBlock to represent hierarchical or grouped time
+    /// intervals. This class is useful for scheduling, timeline management, and other scenarios where time intervals
+    /// need to be managed or analyzed.</remarks>
     public class TimeBlock
     {
         /// <summary>

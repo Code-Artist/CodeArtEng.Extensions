@@ -13,16 +13,32 @@ namespace System
     {
         private static readonly MethodInfo CloneMethod = typeof(Object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
 
+        /// <summary>
+        /// Determines whether the specified <see cref="Type"/> represents a primitive type or a <see cref="string"/>.
+        /// </summary>
+        /// <param name="type">The type to evaluate for primitiveness. Cannot be null.</param>
+        /// <returns>true if <paramref name="type"/> is a primitive type or <see cref="string"/>; otherwise, false.</returns>
         private static bool IsPrimitive(this Type type)
         {
             if (type == typeof(String)) return true;
             return (type.IsValueType & type.IsPrimitive);
         }
 
+        /// <summary>
+        /// Creates a deep copy of the specified object instance.
+        /// </summary>
+        /// <remarks>The copy operation recursively duplicates the entire object graph, including all
+        /// referenced objects. This method does not copy static fields or properties. The method may not support
+        /// copying objects with unmanaged resources or objects that do not support deep cloning. If the object graph
+        /// contains cycles, they are preserved in the copy.</remarks>
+        /// <param name="originalObject">The object to copy. Must not be null.</param>
+        /// <returns>A new object that is a deep copy of the original object. The returned object is of the same type as the
+        /// original.</returns>
         public static Object Copy(this Object originalObject)
         {
             return InternalCopy(originalObject, new Dictionary<Object, Object>(new ReferenceEqualityComparer()));
         }
+
         private static Object InternalCopy(Object originalObject, IDictionary<Object, Object> visited)
         {
             if (originalObject == null) return null;
@@ -68,6 +84,12 @@ namespace System
             }
         }
 
+        /// <summary>
+        /// Creates a deep copy of the specified object instance.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to copy.</typeparam>
+        /// <param name="original">The object instance to copy. Can be null.</param>
+        /// <returns>A new instance of type T that is a copy of the original object, or null if original is null.</returns>
         public static T Copy<T>(this T original)
         {
             return (T)Copy((Object)original);

@@ -9,8 +9,14 @@ using CodeArtEng.Extensions;
 namespace System.Windows.Forms
 {
     /// <summary>
-    /// <see cref="Form"/> class extension.
+    /// Provides extension methods for the Windows Forms Form class to enhance form behavior and appearance, including
+    /// setting the application icon, checking form visibility on connected screens, and managing double buffering for
+    /// child controls.
     /// </summary>
+    /// <remarks>These extension methods are designed to simplify common tasks when working with Windows Forms
+    /// applications. Methods in this class can help ensure forms are visible to users, improve rendering performance,
+    /// and provide consistent application branding by setting the form's icon. All methods are static and intended to
+    /// be used as extension methods on Form instances.</remarks>
     public static class FormExtension
     {
         /// <summary>
@@ -23,6 +29,14 @@ namespace System.Windows.Forms
             form.Icon = ExtractAssociatedIcon(Application.ExecutablePath);
         }
 
+        /// <summary>
+        /// Determines whether the specified form is located outside the bounds of all connected display screens.
+        /// </summary>
+        /// <remarks>This method checks the form's current Location property against the bounds of all
+        /// screens connected to the system. It does not consider the form's size—only its top-left corner. Use this
+        /// method to detect when a form may not be visible to the user due to its position.</remarks>
+        /// <param name="form">The form whose location is evaluated against the available screen regions. Cannot be null.</param>
+        /// <returns>true if the form's location is outside the bounds of all screens; otherwise, false.</returns>
         public static bool IsOutsideViewRegion(this Form form)
         {
             foreach (Screen ptrScren in Screen.AllScreens)

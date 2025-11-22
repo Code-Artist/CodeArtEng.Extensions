@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace CodeArtEng.Extensions
 {
     /// <summary>
-    /// Provides extension methods for the <see cref="Control"/> class.
+    /// Provides extension methods for configuring and enhancing Windows Forms controls.
     /// </summary>
     public static class ControlExtension
     {
