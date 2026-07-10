@@ -451,37 +451,72 @@ namespace System.Windows.Forms
             DataGridView dgv = dgvEx.DataGrid;
             if (dgv.SelectedCells.Count == 0) return;
 
-            //Start paste value from TopLeft Cell of selected cells
-            int row = dgv.SelectedCells.Cast<DataGridViewCell>().Min(n => n.RowIndex);
-            int col = dgv.SelectedCells.Cast<DataGridViewCell>().Min(n => n.ColumnIndex);
+            DataGridViewCell[] selCells = GetSelectedVisibleCells(dgvEx);
 
+            //Clipboard contains single value, paste to all cells
             string clipboardText = Clipboard.GetText();
             if (!clipboardText.Contains('\n') && !clipboardText.Contains('\t'))
             {
-                //Clipboard contains single value, paste to all cells
-                foreach (DataGridViewCell cell in dgv.SelectedCells)
+                foreach (DataGridViewCell cell in selCells)
                     dgvEx.ChangeCellValue(cell, clipboardText);
                 return;
             }
-
-            string[] lines = clipboardText.Split('\n');
-            foreach (string line in lines)
+            else
             {
-                if (row < dgv.Rows.Count)
+                DataGridViewCell[,] cellsArray = ToCellGrid(selCells);
+
+                //Clip board contains multiple values, split lines by carriage return.
+                string[,] pasteValues = ParseDelimitedText(clipboardText);
+
+                int pasteRows = pasteValues.GetLength(0);
+                int pasteCols = pasteValues.GetLength(1);
+
+                if (pasteRows == 0 || pasteCols == 0)
+                    return;
+
+                if (selCells.Length == 1)
                 {
-                    string[] clipBoardCells = line.Split('\t');
-                    for (int i = 0; i < clipBoardCells.Length && col + i < dgv.Columns.Count; i++)
+                    //Selected range is one cell, paste range to visible cells starting from selected cell within boundary of the DataGridView
+                    int startRowIndex = selCells[0].RowIndex;
+                    int startColIndex = selCells[0].ColumnIndex;
+
+                    List<int> targetRows = GetVisibleIndices(dgv.Rows.Count, startRowIndex, pasteRows,
+                        idx => dgv.Rows[idx].Visible);
+                    List<int> targetCols = GetVisibleIndices(dgv.Columns.Count, startColIndex, pasteCols,
+                        idx => dgv.Columns[idx].Visible);
+
+                    for (int r = 0; r < targetRows.Count; r++)
                     {
-                        DataGridViewCell ptrCell = dgv[col + i, row];
-                        dgvEx.ChangeCellValue(ptrCell, clipBoardCells[i]);
+                        for (int c = 0; c < targetCols.Count; c++)
+                        {
+                            SetCellValue(dgv, targetRows[r], targetCols[c], pasteValues[r, c]);
+                        }
                     }
-                    row++;
                 }
                 else
                 {
-                    break;
+                    //Selected range is multiple cells, paste range to selected range starting from selected cell within boundary of the DataGridView
+                    int selRows = cellsArray.GetLength(0);
+                    int selCols = cellsArray.GetLength(1);
+
+                    // If paste block is smaller than (or equal to) the selection, tile it to fill the
+                    // selection (Excel-style repeat). Otherwise, paste the full block starting at the
+                    // top-left of the selection, extending past it but staying within grid bounds.
+                    int outputRows = pasteRows <= selRows ? pasteRows : selRows;
+                    int outputCols = pasteCols <= selCols ? pasteCols : selCols;
+
+                    for (int r = 0; r < outputRows; r++)
+                    {
+                        for (int c = 0; c < outputCols; c++)
+                        {
+                            DataGridViewCell targetCell = cellsArray[r, c];
+                            string value = pasteValues[r % pasteRows, c % pasteCols];
+                            SetCellValue(dgv, targetCell.RowIndex, targetCell.ColumnIndex, value);
+                        }
+                    }
                 }
             }
+
             dgv.RefreshEdit();
         }
 
@@ -543,6 +578,128 @@ namespace System.Windows.Forms
             }
             ptrTracker.Cell.Style.BackColor = ptrTracker.IsModified ? ModifiedCellColor : dgv.DefaultCellStyle.BackColor;
             dgvEx.OnCellValueChanged(new DataGridViewCellEventArgs(c.ColumnIndex, c.RowIndex));
+        }
+
+        private static DataGridViewCell[] GetSelectedVisibleCells(this DataGridViewExHandler dgvEx)
+        {
+            DataGridView dgv = dgvEx.DataGrid;
+            return dgv.SelectedCells.Cast<DataGridViewCell>().Where(n => n.Visible)
+                        .OrderBy(n => n.RowIndex).ThenBy(n => n.ColumnIndex).ToArray();
+        }
+
+        #endregion
+
+        #region [ Utility ]
+
+        public static DataGridViewCell[,] ToCellGrid(IEnumerable<DataGridViewCell> cells)
+        {
+            List<DataGridViewCell> cellList = cells.ToList();
+            if (cellList.Count == 0)
+                return new DataGridViewCell[0, 0];
+
+            List<int> rowIndices = cellList.Select(c => c.RowIndex).Distinct().OrderBy(r => r).ToList();
+            List<int> colIndices = cellList.Select(c => c.ColumnIndex).Distinct().OrderBy(c => c).ToList();
+
+            Dictionary<int, int> rowMap = new Dictionary<int, int>();
+            for (int i = 0; i < rowIndices.Count; i++)
+                rowMap[rowIndices[i]] = i;
+
+            Dictionary<int, int> colMap = new Dictionary<int, int>();
+            for (int i = 0; i < colIndices.Count; i++)
+                colMap[colIndices[i]] = i;
+
+            DataGridViewCell[,] grid = new DataGridViewCell[rowIndices.Count, colIndices.Count];
+
+            foreach (DataGridViewCell cell in cellList)
+                grid[rowMap[cell.RowIndex], colMap[cell.ColumnIndex]] = cell;
+
+            return grid;
+        }
+
+        /// <summary>
+        /// Parses tab/newline-delimited text into a 2D string array.
+        /// Handles \r\n, \r, and \n line endings, and pads ragged rows
+        /// with empty strings so the array is rectangular.
+        /// </summary>
+        public static string[,] ParseDelimitedText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return new string[0, 0];
+
+            // Normalize line endings, then split into rows
+            string normalized = text.Replace("\r\n", "\n").Replace("\r", "\n");
+            string[] rawLines = normalized.Split('\n');
+
+            // Trim a single trailing blank line (common when copying from Excel/DataGridView)
+            List<string> lines = new List<string>(rawLines);
+            if (lines.Count > 0 && lines[lines.Count - 1].Length == 0)
+                lines.RemoveAt(lines.Count - 1);
+
+            if (lines.Count == 0)
+                return new string[0, 0];
+
+            // Split each row into columns and track the widest row
+            List<string[]> rows = new List<string[]>();
+            int maxCols = 0;
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string[] cols = lines[i].Split('\t');
+                rows.Add(cols);
+                if (cols.Length > maxCols)
+                    maxCols = cols.Length;
+            }
+
+            // Build the rectangular result, padding short rows with ""
+            string[,] result = new string[rows.Count, maxCols];
+            for (int r = 0; r < rows.Count; r++)
+            {
+                for (int c = 0; c < maxCols; c++)
+                {
+                    result[r, c] = c < rows[r].Length ? rows[r][c] : string.Empty;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Walks forward from startIndex over up to 'count' visible indices (0..maxCount-1),
+        /// skipping any index for which isVisible returns false.
+        /// </summary>
+        private static List<int> GetVisibleIndices(int maxCount, int startIndex, int count, Func<int, bool> isVisible)
+        {
+            List<int> result = new List<int>();
+            int idx = startIndex;
+
+            while (result.Count < count && idx < maxCount)
+            {
+                if (idx >= 0 && isVisible(idx))
+                    result.Add(idx);
+                idx++;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Safely assigns a value to a DataGridView cell, skipping read-only cells,
+        /// the "new row" placeholder, and out-of-range indices.
+        /// </summary>
+        private static void SetCellValue(DataGridView dgv, int rowIndex, int colIndex, string value)
+        {
+            if (rowIndex < 0 || rowIndex >= dgv.RowCount || colIndex < 0 || colIndex >= dgv.ColumnCount)
+                return;
+
+            DataGridViewRow row = dgv.Rows[rowIndex];
+            if (row.IsNewRow)
+                return;
+
+            DataGridViewCell cell = row.Cells[colIndex];
+            if (cell.ReadOnly || dgv.Columns[colIndex].ReadOnly)
+                return;
+
+            cell.Value = value;
+            SetCellModified(dgv, rowIndex, colIndex);
         }
 
         #endregion

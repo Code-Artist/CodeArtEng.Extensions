@@ -39,12 +39,14 @@
             this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.BtSetModified = new System.Windows.Forms.Button();
+            this.BtAddRow = new System.Windows.Forms.Button();
             this.BtCount = new System.Windows.Forms.Button();
             this.DgvRevert = new System.Windows.Forms.Button();
             this.DgvCommit = new System.Windows.Forms.Button();
             this.DgvEnable = new System.Windows.Forms.Button();
-            this.BtAddRow = new System.Windows.Forms.Button();
-            this.BtSetModified = new System.Windows.Forms.Button();
+            this.BtTest = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Dgv)).BeginInit();
@@ -128,6 +130,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.BtTest);
             this.panel1.Controls.Add(this.BtSetModified);
             this.panel1.Controls.Add(this.BtAddRow);
             this.panel1.Controls.Add(this.BtCount);
@@ -139,6 +143,26 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(786, 40);
             this.panel1.TabIndex = 0;
+            // 
+            // BtSetModified
+            // 
+            this.BtSetModified.Location = new System.Drawing.Point(335, 9);
+            this.BtSetModified.Name = "BtSetModified";
+            this.BtSetModified.Size = new System.Drawing.Size(75, 23);
+            this.BtSetModified.TabIndex = 5;
+            this.BtSetModified.Text = "Set Modified";
+            this.BtSetModified.UseVisualStyleBackColor = true;
+            this.BtSetModified.Click += new System.EventHandler(this.BtSetModified_Click_1);
+            // 
+            // BtAddRow
+            // 
+            this.BtAddRow.Location = new System.Drawing.Point(254, 9);
+            this.BtAddRow.Name = "BtAddRow";
+            this.BtAddRow.Size = new System.Drawing.Size(75, 23);
+            this.BtAddRow.TabIndex = 4;
+            this.BtAddRow.Text = "Add Row";
+            this.BtAddRow.UseVisualStyleBackColor = true;
+            this.BtAddRow.Click += new System.EventHandler(this.BtAddRow_Click);
             // 
             // BtCount
             // 
@@ -180,25 +204,25 @@
             this.DgvEnable.UseVisualStyleBackColor = true;
             this.DgvEnable.Click += new System.EventHandler(this.DgvEnable_Click);
             // 
-            // BtAddRow
+            // BtTest
             // 
-            this.BtAddRow.Location = new System.Drawing.Point(254, 9);
-            this.BtAddRow.Name = "BtAddRow";
-            this.BtAddRow.Size = new System.Drawing.Size(75, 23);
-            this.BtAddRow.TabIndex = 4;
-            this.BtAddRow.Text = "Add Row";
-            this.BtAddRow.UseVisualStyleBackColor = true;
-            this.BtAddRow.Click += new System.EventHandler(this.BtAddRow_Click);
+            this.BtTest.Location = new System.Drawing.Point(416, 9);
+            this.BtTest.Name = "BtTest";
+            this.BtTest.Size = new System.Drawing.Size(75, 23);
+            this.BtTest.TabIndex = 6;
+            this.BtTest.Text = "Test";
+            this.BtTest.UseVisualStyleBackColor = true;
+            this.BtTest.Click += new System.EventHandler(this.BtTest_Click);
             // 
-            // BtSetModified
+            // button1
             // 
-            this.BtSetModified.Location = new System.Drawing.Point(335, 9);
-            this.BtSetModified.Name = "BtSetModified";
-            this.BtSetModified.Size = new System.Drawing.Size(75, 23);
-            this.BtSetModified.TabIndex = 5;
-            this.BtSetModified.Text = "Set Modified";
-            this.BtSetModified.UseVisualStyleBackColor = true;
-            this.BtSetModified.Click += new System.EventHandler(this.BtSetModified_Click_1);
+            this.button1.Location = new System.Drawing.Point(497, 9);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "UnHide";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainForm
             // 
@@ -235,6 +259,8 @@
         private System.Windows.Forms.Button BtCount;
         private System.Windows.Forms.Button BtSetModified;
         private System.Windows.Forms.Button BtAddRow;
+        private System.Windows.Forms.Button BtTest;
+        private System.Windows.Forms.Button button1;
     }
 }
 

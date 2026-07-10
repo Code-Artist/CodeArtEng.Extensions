@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace CodeArtEngExtensionsDemo
 {
@@ -39,6 +40,29 @@ namespace CodeArtEngExtensionsDemo
                 }
             }
         }
+
+        private void BtTest_Click(object sender, EventArgs e)
+        {
+            //Test Hidden Rows
+            Random rand = new Random();
+            Dgv.Rows.Clear();
+            for (int x = 1; x < 100; x++)
+            {
+                DataGridViewRow ptrRow = Dgv.Rows[Dgv.Rows.Add()];
+                foreach (DataGridViewCell cell in ptrRow.Cells)
+                {
+                    if (cell.ColumnIndex == 2) cell.Value = x;
+                    else if (cell is DataGridViewCheckBoxCell)
+                    {
+                        cell.Value = rand.NextDouble() > 0.5;
+                    }
+                    else cell.Value = rand.Next(100);
+
+                    if (x > 10 && x < 20) ptrRow.Visible = false;
+                }
+            }
+        }
+
 
         private void DgvEnable_Click(object sender, EventArgs e)
         {
@@ -87,6 +111,15 @@ namespace CodeArtEngExtensionsDemo
         private void BtSetModified_Click_1(object sender, EventArgs e)
         {
             Dgv.SetCellModified(Dgv.CurrentCell.RowIndex, Dgv.CurrentCell.ColumnIndex);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in Dgv.Rows)
+            {
+                if (row.IsNewRow) continue;
+                row.Visible = true;
+            }
         }
     }
 }
